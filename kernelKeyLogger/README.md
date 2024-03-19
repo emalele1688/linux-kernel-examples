@@ -2,7 +2,7 @@ How to use it: Modify the LOG_FILE_PATH macro on the keyboad_logger.c source cod
 
 Build: `make`
 
-Execute: `insmod keyoboard_mylogger.ko`
+Execute: `insmod keyoboard_logger.ko`
 
 You'll find the log file on the LOG_FILE_PATH path.
 
