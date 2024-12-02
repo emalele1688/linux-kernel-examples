@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
+
 /*
  * Copyright (C) 2023 - 2024 Emanuele Santini <emanuele.santini.88@gmail.com>
  */
@@ -115,18 +116,18 @@ int security_hook_entry(struct kretprobe_instance *ri, struct pt_regs *regs)
     if(IS_ERR(res = d_path(&fp_executable->f_path, exe_path, 256)))
         return 1;
 
-	/* If the process executable is the same of executable_path (the one we want to block):
-	 * 0 is returned: The exit callback is executed
-	 */
+    /* If the process executable is the same of executable_path (the one we want to block):
+     * 0 is returned: The exit callback is executed
+    */
     if(!strncmp(res, executable_path, 256))
     {
-    	printk("Blocking %s\n", res);
+        printk("Blocking %s\n", res);
         return 0;
     }
 
     fput(fp_executable);
 
-	// Retrun 1: Do not execute the exit callback (security_hook_exit)
+    // Retrun 1: Do not execute the exit callback (security_hook_exit)
     return 1;
 }
 
@@ -136,7 +137,7 @@ int security_hook_entry(struct kretprobe_instance *ri, struct pt_regs *regs)
  */
 int security_hook_exit(struct kretprobe_instance *ri, struct pt_regs *regs)
 {
-	// rax contains the exit value of the probed function
+    // rax contains the exit value of the probed function
     regs->ax = -EACCES;
     return 0;
 }
